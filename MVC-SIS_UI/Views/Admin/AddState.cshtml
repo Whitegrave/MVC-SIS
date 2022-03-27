@@ -1,0 +1,29 @@
+﻿<!-- 6) Create the AddState View -->
+<!-- 6b) Add the correct declaration at the top of the view to indicate the type of model that will be passed to the view (AddEditStateVM) -->
+@model MVC_SIS_UI.Models.AddEditStateVM
+@{
+    ViewBag.Title = "AddState";
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Add State</h3>
+        @Html.ActionLink("Return to List", "States", "Admin")
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <!-- 6c) In the view, create a form that will collect the StateAbbreviation and StateName from the user and POST it back to the AddState HttpPost method in the Admin controller -->
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary()
+            <div class="form-group">
+                <label>State</label>
+                @Html.TextBoxFor(m => m.currentState.StateName, new { @class = "form-control", placeholder = "State Name" })
+                @Html.TextBoxFor(m => m.currentState.StateAbbreviation, new { @class = "form-control", placeholder = "State Abbreviation" })
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+        }
+    </div>
+</div>
+

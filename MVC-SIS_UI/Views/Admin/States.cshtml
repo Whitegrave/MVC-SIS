@@ -1,0 +1,42 @@
+﻿<!-- 3a) Create the states list view. -->
+<!-- 3b) Add the correct declaration at the top of the view to indicate the type of model that will be passed to the view (List<State>). -->
+@model List<MVC_SIS_Models.State>
+@{
+    ViewBag.Title = "States";
+}
+
+<!-- 3c) In the view, create some HTML that contains a table to display all states currently stored in our data repository. -->
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Majors</h3>
+        <!-- 3d) Add a button/link to the States list view that will call the AddState method in the Admin controller. -->
+        @Html.ActionLink("Add State", "AddState", "Admin", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-striped" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var state in Model)
+                {
+                    <tr>
+                        <td>@state.StateAbbreviation</td>
+                        <td>@state.StateName</td>
+                        <td>
+                            <!-- 6d) Add a link to the States list view table (one link per row of data) that will call the EditState method in the Admin -->
+                            <!--        controller, passing the StateAbbreviation of the specific row to the controller to identify which one to edit. -->
+                            @Html.ActionLink("Edit", "EditState", "Admin", new { id = state.StateAbbreviation }, null) |
+                            @Html.ActionLink("Delete", "DeleteState", "Admin", new { id = state.StateAbbreviation }, null)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
