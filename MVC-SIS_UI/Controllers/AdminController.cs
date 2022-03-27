@@ -27,6 +27,14 @@ namespace MVC_SIS_UI.Controllers
             return View(model.ToList());
         }
 
+        // Courses 2)
+        [HttpGet]
+        public ActionResult Courses()
+        {
+            var model = CourseRepository.GetAll();
+            return View(model.ToList());
+        }
+
         // 5a) Create a GET method in the Admin controller for adding states (AddState). It should return a view with an empty state model(AddEditStateVM) as a parameter.
         [HttpGet]
         public ActionResult AddState()
@@ -48,6 +56,26 @@ namespace MVC_SIS_UI.Controllers
             return RedirectToAction("States");
         }
 
+        // Courses 5a)
+        [HttpGet]
+        public ActionResult AddCourse()
+        {
+            return View(new AddEditCourseVM());
+        }
+
+        // Courses 5b)
+        [HttpPost]
+        public ActionResult AddCourse(AddEditCourseVM viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            CourseRepository.Add(viewModel.currentCourse.CourseName);
+            return RedirectToAction("Courses");
+        }
+
         // 7a) Add a GET method in the Admin controller for DeleteState. The method should take a string parameter for StateAbbreviation
         [HttpGet]
         public ActionResult DeleteState(string id)
@@ -66,7 +94,7 @@ namespace MVC_SIS_UI.Controllers
             return RedirectToAction("States");
         }
 
-        // Chose to create edit functionality
+        // Chose to create edit functionality for States
         [HttpGet]
         public ActionResult EditState(string id)
         {
@@ -85,6 +113,44 @@ namespace MVC_SIS_UI.Controllers
 
             StateRepository.Edit(viewModel.currentState);
             return RedirectToAction("States");
+        }
+
+        // Courses 7a) 
+        [HttpGet]
+        public ActionResult DeleteCourse(int id)
+        {
+            DeleteCourseVM viewModel = new DeleteCourseVM();
+            viewModel.currentCourse = CourseRepository.Get(id);
+            return View(viewModel);
+        }
+
+        // Courses 7b) 
+        [HttpPost]
+        public ActionResult DeleteCourse(DeleteCourseVM viewModel)
+        {
+            CourseRepository.Delete(viewModel.currentCourse.CourseId);
+            return RedirectToAction("Courses");
+        }
+
+        // Courses) Chose to create edit functionality for Courses
+        [HttpGet]
+        public ActionResult EditCourse(int id)
+        {
+            AddEditCourseVM viewmodel = new AddEditCourseVM();
+            viewmodel.currentCourse = CourseRepository.Get(id);
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        public ActionResult EditCourse(AddEditCourseVM viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            CourseRepository.Edit(viewModel.currentCourse);
+            return RedirectToAction("Courses");
         }
 
         [HttpGet]

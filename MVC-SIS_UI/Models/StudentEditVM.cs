@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
 namespace MVC_SIS_UI.Models
 {
-    public class StudentAddVM : IValidatableObject
+    public class StudentEditVM : IValidatableObject
     {
         public Student Student { get; set; }
         public List<SelectListItem> CourseItems { get; set; }
@@ -19,9 +20,8 @@ namespace MVC_SIS_UI.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             List<ValidationResult> errors = new List<ValidationResult>();
-
-            if (Student.FirstName == null || Student.FirstName == ""
-                || Student.LastName == null || Student.LastName == "")
+            
+            if (Student.FirstName == "" || Student.LastName == "")
             {
                 errors.Add(new ValidationResult("Please enter a valid Student name",
                     new[] { "Student.FirstName or Student.LastName invalid" }));
@@ -39,10 +39,40 @@ namespace MVC_SIS_UI.Models
                     new[] { "Student.Major or Student.Courses invalid" }));
             }
 
+            if (Student.Address == null || Student.Address.Street1 == "" || Student.Address.Street1.Length > 30)
+            {
+                errors.Add(new ValidationResult("Please enter a valid street, maximum 30 characters.",
+                    new[] { "Student.Address.Street1 invalid" }));
+            }
+
+            if (Student.Address.Street2.Length > 30)
+            {
+                errors.Add(new ValidationResult("Please enter a valid street 2, maximum 30 characters.",
+                    new[] { "Student.Address.Street2 invalid" }));
+            }
+
+            if (Student.Address.City == ""|| Student.Address.City.Length > 20)
+            {
+                errors.Add(new ValidationResult("Please enter a valid City, maximum 20 characters.",
+                    new[] { "Student.Address.City invalid" }));
+            }
+
+            if (Student.Address.State.StateAbbreviation == "")
+            {
+                errors.Add(new ValidationResult("Please select a valid State",
+                    new[] { "Student.Address.State invalid" }));
+            }
+
+            if (Student.Address.PostalCode.Length != 5 || !Regex.IsMatch(Student.Address.PostalCode, @"^[0-9]+$"))
+            {
+                errors.Add(new ValidationResult("Please enter a Postal Code, numbers only, maximum 5.",
+                    new[] { "Student.Address.PostalCode invalid" }));
+            }
+            
             return errors;
         }
 
-        public StudentAddVM()
+        public StudentEditVM()
         {
             CourseItems = new List<SelectListItem>();
             MajorItems = new List<SelectListItem>();
@@ -85,6 +115,6 @@ namespace MVC_SIS_UI.Models
                     Text = state.StateName
                 });
             }
-        }     
+        }
     }
 }

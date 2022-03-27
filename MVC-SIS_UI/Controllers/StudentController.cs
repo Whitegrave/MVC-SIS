@@ -36,7 +36,7 @@ namespace MVC_SIS_UI.Controllers
 
         [HttpPost]
         public ActionResult Add(StudentAddVM studentVM)
-        {
+        {          
             studentVM.Student.Courses = new List<Course>();
 
             foreach (var id in studentVM.SelectedCourseIds)
@@ -44,7 +44,47 @@ namespace MVC_SIS_UI.Controllers
 
             studentVM.Student.Major = MajorRepository.Get(studentVM.Student.Major.MajorId);
 
+            if (!ModelState.IsValid)
+            {
+                studentVM.SetCourseItems(CourseRepository.GetAll());
+                studentVM.SetMajorItems(MajorRepository.GetAll());
+                return View(studentVM);
+            }
+
             StudentRepository.Add(studentVM.Student);
+
+            return RedirectToAction("List");
+        }
+
+        [HttpGet]
+        public ActionResult Edit()
+        {
+            var viewModel = new StudentEditVM();
+            viewModel.SetCourseItems(CourseRepository.GetAll());
+            viewModel.SetMajorItems(MajorRepository.GetAll());
+            viewModel.SetStateItems(StateRepository.GetAll());
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(StudentEditVM studentVM)
+        {
+            studentVM.Student.Courses = new List<Course>();
+
+            foreach (var id in studentVM.SelectedCourseIds)
+                studentVM.Student.Courses.Add(CourseRepository.Get(id));
+
+            studentVM.Student.Major = MajorRepository.Get(studentVM.Student.Major.MajorId);
+            studentVM.Student.Address.State = StateRepository.Get(studentVM.Student.Address.State.StateAbbreviation);
+            Student stu = StudentRepository.Get(studentVM.Student.StudentId);
+            if (!ModelState.IsValid)
+            {
+                studentVM.SetCourseItems(CourseRepository.GetAll());
+                studentVM.SetMajorItems(MajorRepository.GetAll());
+                studentVM.SetStateItems(StateRepository.GetAll());
+                return View(studentVM);
+            }
+            StudentRepository.Edit(studentVM.Student);
 
             return RedirectToAction("List");
         }
