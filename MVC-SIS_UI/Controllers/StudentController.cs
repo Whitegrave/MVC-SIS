@@ -57,9 +57,10 @@ namespace MVC_SIS_UI.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
             var viewModel = new StudentEditVM();
+            viewModel.Student = StudentRepository.Get(id);
             viewModel.SetCourseItems(CourseRepository.GetAll());
             viewModel.SetMajorItems(MajorRepository.GetAll());
             viewModel.SetStateItems(StateRepository.GetAll());
@@ -76,7 +77,7 @@ namespace MVC_SIS_UI.Controllers
 
             studentVM.Student.Major = MajorRepository.Get(studentVM.Student.Major.MajorId);
             studentVM.Student.Address.State = StateRepository.Get(studentVM.Student.Address.State.StateAbbreviation);
-            Student stu = StudentRepository.Get(studentVM.Student.StudentId);
+
             if (!ModelState.IsValid)
             {
                 studentVM.SetCourseItems(CourseRepository.GetAll());
@@ -85,7 +86,7 @@ namespace MVC_SIS_UI.Controllers
                 return View(studentVM);
             }
             StudentRepository.Edit(studentVM.Student);
-
+            StudentRepository.SaveAddress(studentVM.Student.StudentId, studentVM.Student.Address);
             return RedirectToAction("List");
         }
     }

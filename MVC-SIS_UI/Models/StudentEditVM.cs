@@ -39,16 +39,26 @@ namespace MVC_SIS_UI.Models
                     new[] { "Student.Major or Student.Courses invalid" }));
             }
 
-            if (Student.Address == null || Student.Address.Street1 == "" || Student.Address.Street1.Length > 30)
+            if (Student.Address.Street1 == null)
+            {
+                errors.Add(new ValidationResult("Please enter a valid street, maximum 30 characters.",
+                    new[] { "Student.Address.Street1 invalid" }));
+                return errors;
+            }
+
+            if (Student.Address.Street1 == "" || Student.Address.Street1.Length > 30)
             {
                 errors.Add(new ValidationResult("Please enter a valid street, maximum 30 characters.",
                     new[] { "Student.Address.Street1 invalid" }));
             }
 
-            if (Student.Address.Street2.Length > 30)
+            if (Student.Address.Street2 != null)
             {
-                errors.Add(new ValidationResult("Please enter a valid street 2, maximum 30 characters.",
-                    new[] { "Student.Address.Street2 invalid" }));
+                if (Student.Address.Street2.Length > 30)
+                {
+                    errors.Add(new ValidationResult("Please enter a valid street 2, maximum 30 characters.",
+                        new[] { "Student.Address.Street2 invalid" }));
+                }
             }
 
             if (Student.Address.City == ""|| Student.Address.City.Length > 20)
